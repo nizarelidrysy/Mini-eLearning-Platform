@@ -1,0 +1,59 @@
+{
+    "administrateurs": [
+        {
+            "1": {
+                "nom": "Admin Principal",
+                "email": "admin@emsi.ma",
+                "password": "admin"
+            }
+        }
+    ],
+    "enseignants": [
+        {
+            "1": {
+                "nom": "reem",
+                "email": "reem",
+                "password": "1234"
+            }
+        },
+        {
+            "2": {
+                "nom": "r",
+                "email": "r",
+                "password": "r"
+            }
+        },
+        {
+            "3": {
+                "nom": "nizaeina",
+                "email": "azerty",
+                "password": "azerty"
+            }
+        }
+    ],
+    "etudiants": [
+        {
+            "1": {
+                "nom": "rim charai",
+                "email": "rim",
+                "password": ""
+            }
+        },
+        {
+            "2": {
+                "nom": "Nizar EL IDRYSY",
+                "email": "hello@gmail.com",
+                "password": "nizarnizar"
+            }
+        }
+    ],
+    "cours": [
+        {
+            "1": {
+                "titre": "dejhjdew",
+                "description": "hjwhd",
+                "enseignant_id": 1
+            }
+        }
+    ]
+}
