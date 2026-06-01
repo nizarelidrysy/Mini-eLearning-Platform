@@ -1,0 +1,120 @@
+{% extends 'plateforme/base.html' %}
+{% block titre %}{{ cours.titre }}{% endblock %}
+{% block page_title %}{{ cours.titre }}{% endblock %}
+
+{% block contenu %}
+<!-- En-tête cours -->
+<div class="nx-card mb-4">
+  <div style="display:flex; gap:24px; align-items:flex-start; flex-wrap:wrap;">
+    {% if cours.image %}
+    <img src="{{ cours.image.url }}" alt="{{ cours.titre }}"
+         style="width:200px; height:130px; object-fit:cover; border-radius:10px; flex-shrink:0;">
+    {% else %}
+    <div style="width:200px; height:130px; background:linear-gradient(135deg,var(--primary),var(--accent));
+         border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:48px; flex-shrink:0;">
+      📖
+    </div>
+    {% endif %}
+    <div style="flex:1;">
+      <h1 style="font-size:22px; font-weight:800; margin-bottom:8px;">{{ cours.titre }}</h1>
+      <p style="color:var(--text-muted); font-size:14px; margin-bottom:16px;">{{ cours.description }}</p>
+      <div class="d-flex gap-4" style="font-size:13px; color:var(--text-muted); flex-wrap:wrap;">
+        <span>👨‍🏫 <strong style="color:white;">{{ cours.enseignant.get_full_name|default:cours.enseignant.username }}</strong></span>
+        <span>📖 {{ lecons|length }} leçon{{ lecons|length|pluralize }}</span>
+        <span>🎓 {{ cours.nombre_inscrits }} inscrit{{ cours.nombre_inscrits|pluralize }}</span>
+      </div>
+
+      {% if inscription %}
+      <div style="margin-top:16px;">
+        <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); margin-bottom:6px;">
+          <span>Votre progression</span><span>{{ inscription.progression }}%</span>
+        </div>
+        <div class="nx-progress" style="max-width:300px;">
+          <div class="nx-progress-bar" style="width:{{ inscription.progression }}%;"></div>
+        </div>
+      </div>
+      {% else %}
+      <a href="{% url 'sinscrire_cours' cours.pk %}" class="btn-nx btn-nx-primary mt-3">
+        🎓 S'inscrire à ce cours
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Leçons -->
+  <div class="col-lg-8">
+    <div class="nx-card">
+      <div class="nx-card-header">
+        <span class="nx-card-title">📖 Contenu du cours</span>
+      </div>
+
+      {% if lecons %}
+        {% for lecon in lecons %}
+        <div style="display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid var(--border);">
+          <div style="width:32px; height:32px; border-radius:50%; background:rgba(108,99,255,0.15);
+               display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700;
+               color:var(--primary-light); flex-shrink:0;">
+            {{ lecon.ordre }}
+          </div>
+          <div style="flex:1;">
+            <div style="font-weight:600; font-size:14px;">{{ lecon.titre }}</div>
+            {% if lecon.fichier %}
+              <span style="font-size:11px; color:var(--text-muted);">📎 Fichier PDF disponible</span>
+            {% endif %}
+          </div>
+          {% if inscription %}
+          <a href="{% url 'lecon' lecon.pk %}" class="btn-nx btn-nx-ghost btn-nx-sm">Lire →</a>
+          {% else %}
+          <span style="font-size:12px; color:var(--text-muted);">🔒</span>
+          {% endif %}
+        </div>
+        {% endfor %}
+      {% else %}
+        <p style="text-align:center; padding:32px 0; color:var(--text-muted);">Aucune leçon disponible pour ce cours.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Panneau latéral -->
+  <div class="col-lg-4">
+    <!-- Quiz -->
+    <div class="nx-card mb-4">
+      <div class="nx-card-header">
+        <span class="nx-card-title">🧠 Quiz</span>
+      </div>
+      {% if quiz and inscription %}
+        <p style="font-size:14px; margin-bottom:12px;"><strong>{{ quiz.titre }}</strong></p>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">{{ quiz.nombre_questions }} question{{ quiz.nombre_questions|pluralize }}</p>
+
+        {% if resultat %}
+          <div class="nx-alert nx-alert-success">
+            🏆 Dernier score : <strong>{{ resultat.score }}%</strong>
+          </div>
+        {% endif %}
+
+        <a href="{% url 'passer_quiz' quiz.pk %}" class="btn-nx btn-nx-accent" style="width:100%; justify-content:center;">
+          🚀 {% if resultat %}Repasser le quiz{% else %}Passer le quiz{% endif %}
+        </a>
+      {% elif not inscription %}
+        <p style="color:var(--text-muted); font-size:13px;">Inscrivez-vous au cours pour accéder au quiz.</p>
+      {% else %}
+        <p style="color:var(--text-muted); font-size:13px;">Aucun quiz pour ce cours.</p>
+      {% endif %}
+    </div>
+
+    <!-- Infos -->
+    <div class="nx-card">
+      <div class="nx-card-header">
+        <span class="nx-card-title">ℹ️ Informations</span>
+      </div>
+      <div style="font-size:13px; color:var(--text-muted);">
+        <p style="margin-bottom:8px;">📅 Créé le {{ cours.date_creation|date:"d/m/Y" }}</p>
+        <p style="margin-bottom:8px;">👨‍🏫 {{ cours.enseignant.get_full_name|default:cours.enseignant.username }}</p>
+        <p>📖 {{ lecons|length }} leçon{{ lecons|length|pluralize }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

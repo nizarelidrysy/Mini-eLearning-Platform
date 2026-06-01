@@ -1,0 +1,120 @@
+{% extends 'plateforme/base.html' %}
+{% block titre %}{{ cours.titre }} — Gestion{% endblock %}
+{% block page_title %}{{ cours.titre }}{% endblock %}
+
+{% block contenu %}
+<!-- En-tête du cours -->
+<div class="nx-card mb-4">
+  <div class="nx-card-header">
+    <div>
+      <h1 style="font-size:22px; font-weight:800; margin-bottom:4px;">{{ cours.titre }}</h1>
+      <p style="color:var(--text-muted); font-size:14px; margin:0;">{{ cours.description }}</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{% url 'modifier_cours' cours.pk %}" class="btn-nx btn-nx-ghost btn-nx-sm">
+        <i class="bi bi-pencil"></i> Modifier
+      </a>
+      <a href="{% url 'supprimer_cours' cours.pk %}" class="btn-nx btn-nx-danger btn-nx-sm">
+        <i class="bi bi-trash"></i>
+      </a>
+    </div>
+  </div>
+  <div class="d-flex gap-4" style="font-size:14px; color:var(--text-muted);">
+    <span>📖 <strong style="color:white;">{{ lecons|length }}</strong> leçon{{ lecons|length|pluralize }}</span>
+    <span>🎓 <strong style="color:white;">{{ inscrits|length }}</strong> étudiant{{ inscrits|length|pluralize }}</span>
+    <span>{{ cours.date_creation|date:"d/m/Y" }}</span>
+    {% if cours.est_publie %}
+      <span class="nx-badge nx-badge-success">✓ Publié</span>
+    {% else %}
+      <span class="nx-badge nx-badge-warning">Brouillon</span>
+    {% endif %}
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Leçons -->
+  <div class="col-lg-7">
+    <div class="nx-card">
+      <div class="nx-card-header">
+        <span class="nx-card-title">📖 Leçons</span>
+        <a href="{% url 'ajouter_lecon' cours.pk %}" class="btn-nx btn-nx-primary btn-nx-sm">
+          <i class="bi bi-plus"></i> Ajouter
+        </a>
+      </div>
+
+      {% if lecons %}
+      {% for lecon in lecons %}
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--border);">
+        <div>
+          <span style="color:var(--primary-light); font-size:12px; font-weight:700; margin-right:8px;">{{ lecon.ordre }}.</span>
+          <strong>{{ lecon.titre }}</strong>
+          {% if lecon.fichier %}
+            <span class="nx-badge nx-badge-enseignant" style="margin-left:8px; font-size:10px;">PDF</span>
+          {% endif %}
+        </div>
+        <div class="d-flex gap-2">
+          <a href="{% url 'modifier_lecon' lecon.pk %}" class="btn-nx btn-nx-ghost btn-nx-sm"><i class="bi bi-pencil"></i></a>
+          <a href="{% url 'supprimer_lecon' lecon.pk %}" class="btn-nx btn-nx-danger btn-nx-sm"><i class="bi bi-trash"></i></a>
+        </div>
+      </div>
+      {% endfor %}
+      {% else %}
+        <p style="text-align:center; padding:32px 0; color:var(--text-muted);">Aucune leçon. Commencez par en ajouter une !</p>
+      {% endif %}
+    </div>
+
+    <!-- Quiz -->
+    <div class="nx-card mt-4">
+      <div class="nx-card-header">
+        <span class="nx-card-title">🧠 Quiz QCM</span>
+        {% if not quiz %}
+        <a href="{% url 'creer_quiz' cours.pk %}" class="btn-nx btn-nx-accent btn-nx-sm">
+          <i class="bi bi-plus"></i> Créer un quiz
+        </a>
+        {% else %}
+        <a href="{% url 'gerer_quiz' quiz.pk %}" class="btn-nx btn-nx-ghost btn-nx-sm">
+          Gérer le quiz
+        </a>
+        {% endif %}
+      </div>
+      {% if quiz %}
+        <p style="font-size:14px;"><strong>{{ quiz.titre }}</strong></p>
+        <p style="color:var(--text-muted); font-size:13px;">{{ quiz.nombre_questions }} question{{ quiz.nombre_questions|pluralize }}</p>
+        <a href="{% url 'gerer_quiz' quiz.pk %}" class="btn-nx btn-nx-primary btn-nx-sm">
+          <i class="bi bi-gear"></i> Gérer les questions
+        </a>
+      {% else %}
+        <p style="color:var(--text-muted); font-size:14px;">Pas encore de quiz pour ce cours.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Étudiants inscrits -->
+  <div class="col-lg-5">
+    <div class="nx-card">
+      <div class="nx-card-header">
+        <span class="nx-card-title">🎓 Étudiants inscrits</span>
+        <span class="nx-badge nx-badge-success">{{ inscrits|length }}</span>
+      </div>
+      {% if inscrits %}
+      {% for inscription in inscrits %}
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border);">
+        <div>
+          <div style="font-size:14px; font-weight:600;">{{ inscription.etudiant.get_full_name|default:inscription.etudiant.username }}</div>
+          <div style="font-size:11px; color:var(--text-muted);">{{ inscription.date_inscription|date:"d/m/Y" }}</div>
+        </div>
+        <div style="text-align:right; min-width:80px;">
+          <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px;">{{ inscription.progression }}%</div>
+          <div class="nx-progress" style="width:80px;">
+            <div class="nx-progress-bar" style="width:{{ inscription.progression }}%;"></div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      {% else %}
+        <p style="text-align:center; padding:24px 0; color:var(--text-muted); font-size:14px;">Aucun étudiant inscrit pour l'instant.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

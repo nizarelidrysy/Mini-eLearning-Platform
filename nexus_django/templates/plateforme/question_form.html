@@ -1,0 +1,28 @@
+{% extends 'plateforme/base.html' %}
+{% block titre %}Ajouter une question{% endblock %}
+{% block page_title %}Ajouter une question{% endblock %}
+
+{% block contenu %}
+<div style="max-width:560px;">
+  <div class="nx-card">
+    <div class="nx-card-header">
+      <span class="nx-card-title">❓ Nouvelle question</span>
+      <span style="font-size:12px; color:var(--text-muted);">Quiz : {{ quiz.titre }}</span>
+    </div>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="mb-3">
+        <label class="form-label">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<div style="color:#ff7675;font-size:12px;">{{ field.errors|join:", " }}</div>{% endif %}
+      </div>
+      {% endfor %}
+      <div class="d-flex gap-3 mt-4">
+        <button type="submit" class="btn-nx btn-nx-primary"><i class="bi bi-check"></i> Ajouter</button>
+        <a href="{% url 'gerer_quiz' quiz.pk %}" class="btn-nx btn-nx-ghost">Annuler</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

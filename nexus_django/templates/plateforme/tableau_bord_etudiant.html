@@ -1,0 +1,102 @@
+{% extends 'plateforme/base.html' %}
+{% block titre %}Tableau de bord Étudiant{% endblock %}
+{% block page_title %}Espace Étudiant{% endblock %}
+
+{% block contenu %}
+<!-- Stats -->
+<div class="nx-stats-grid">
+  <div class="nx-stat-card">
+    <div class="nx-stat-icon purple">📚</div>
+    <div>
+      <div class="nx-stat-value">{{ inscriptions|length }}</div>
+      <div class="nx-stat-label">Cours suivis</div>
+    </div>
+  </div>
+  <div class="nx-stat-card">
+    <div class="nx-stat-icon gold">🏆</div>
+    <div>
+      <div class="nx-stat-value">{{ resultats|length }}</div>
+      <div class="nx-stat-label">Quiz passés</div>
+    </div>
+  </div>
+</div>
+
+<!-- Mes cours en cours -->
+<div class="nx-card mb-4">
+  <div class="nx-card-header">
+    <span class="nx-card-title">📚 Mes cours</span>
+    <a href="{% url 'catalogue' %}" class="btn-nx btn-nx-primary btn-nx-sm">
+      <i class="bi bi-search"></i> Explorer le catalogue
+    </a>
+  </div>
+
+  {% if inscriptions %}
+  <div class="nx-courses-grid" style="padding-top:8px;">
+    {% for inscription in inscriptions %}
+    <div class="nx-course-card">
+      <div class="nx-course-img">
+        {% if inscription.cours.image %}
+          <img src="{{ inscription.cours.image.url }}" alt="{{ inscription.cours.titre }}">
+        {% else %}
+          📖
+        {% endif %}
+      </div>
+      <div class="nx-course-body">
+        <div class="nx-course-title">{{ inscription.cours.titre }}</div>
+        <div class="nx-course-desc">{{ inscription.cours.description|truncatechars:80 }}</div>
+        <div style="margin-bottom:12px;">
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); margin-bottom:6px;">
+            <span>Progression</span>
+            <span>{{ inscription.progression }}%</span>
+          </div>
+          <div class="nx-progress">
+            <div class="nx-progress-bar" style="width:{{ inscription.progression }}%;"></div>
+          </div>
+        </div>
+        <a href="{% url 'detail_cours_etudiant' inscription.cours.pk %}" class="btn-nx btn-nx-primary btn-nx-sm">
+          Continuer →
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+    <div style="text-align:center; padding:48px 0;">
+      <div style="font-size:48px; margin-bottom:16px;">🎓</div>
+      <p style="color:var(--text-muted); margin-bottom:20px;">Vous n'êtes inscrit à aucun cours.</p>
+      <a href="{% url 'catalogue' %}" class="btn-nx btn-nx-primary">
+        <i class="bi bi-search"></i> Explorer le catalogue
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Résultats récents -->
+{% if resultats %}
+<div class="nx-card">
+  <div class="nx-card-header">
+    <span class="nx-card-title">🏆 Mes derniers résultats</span>
+    <a href="{% url 'mes_resultats' %}" class="btn-nx btn-nx-ghost btn-nx-sm">Voir tout</a>
+  </div>
+  <table class="nx-table">
+    <thead>
+      <tr><th>Quiz</th><th>Cours</th><th>Score</th><th>Date</th></tr>
+    </thead>
+    <tbody>
+      {% for r in resultats|slice:":5" %}
+      <tr>
+        <td><strong>{{ r.quiz.titre }}</strong></td>
+        <td class="text-muted">{{ r.quiz.cours.titre }}</td>
+        <td>
+          <span class="nx-badge {% if r.score >= 70 %}nx-badge-success{% elif r.score >= 50 %}nx-badge-warning{% else %}nx-badge-danger{% endif %}">
+            {{ r.score }}%
+          </span>
+        </td>
+        <td class="text-muted" style="font-size:12px;">{{ r.date|date:"d/m/Y" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'plateforme/base.html' %}
+{% block titre %}{{ quiz.titre }}{% endblock %}
+{% block page_title %}Quiz — {{ cours.titre }}{% endblock %}
+
+{% block contenu %}
+<form method="post" novalidate>
+  {% csrf_token %}
+
+  <div style="margin-bottom:24px;">
+    <h2 style="font-size:20px; font-weight:800; margin-bottom:4px;">{{ quiz.titre }}</h2>
+    <p style="color:var(--text-muted); font-size:14px;">{{ questions|length }} question{{ questions|length|pluralize }} · Répondez à toutes avant de soumettre.</p>
+  </div>
+
+  {% for question in questions %}
+  <div class="nx-question-card nx-fade-in">
+    <div class="nx-question-text">{{ forloop.counter }}. {{ question.texte }}</div>
+
+    {% for choix in question.choix.all %}
+    <label class="nx-choice" for="q{{ question.pk }}_c{{ choix.pk }}">
+      <input type="radio" name="question_{{ question.pk }}" value="{{ choix.pk }}"
+             id="q{{ question.pk }}_c{{ choix.pk }}" style="accent-color:var(--primary);">
+      <span>{{ choix.texte }}</span>
+    </label>
+    {% empty %}
+      <p style="color:var(--text-muted); font-size:13px;">Aucun choix pour cette question.</p>
+    {% endfor %}
+  </div>
+  {% endfor %}
+
+  <div style="display:flex; gap:12px; margin-top:8px;">
+    <button type="submit" class="btn-nx btn-nx-accent" style="font-size:15px; padding:12px 28px;">
+      🚀 Soumettre mes réponses
+    </button>
+    <a href="{% url 'detail_cours_etudiant' cours.pk %}" class="btn-nx btn-nx-ghost">Annuler</a>
+  </div>
+</form>
+{% endblock %}

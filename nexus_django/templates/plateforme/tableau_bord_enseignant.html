@@ -1,0 +1,73 @@
+{% extends 'plateforme/base.html' %}
+{% block titre %}Tableau de bord Enseignant{% endblock %}
+{% block page_title %}Espace Enseignant{% endblock %}
+
+{% block contenu %}
+<!-- Stats -->
+<div class="nx-stats-grid">
+  <div class="nx-stat-card">
+    <div class="nx-stat-icon purple">📚</div>
+    <div>
+      <div class="nx-stat-value">{{ mes_cours|length }}</div>
+      <div class="nx-stat-label">Mes cours</div>
+    </div>
+  </div>
+  <div class="nx-stat-card">
+    <div class="nx-stat-icon green">🎓</div>
+    <div>
+      <div class="nx-stat-value">{{ total_inscrits }}</div>
+      <div class="nx-stat-label">Étudiants inscrits</div>
+    </div>
+  </div>
+</div>
+
+<!-- Mes cours -->
+<div class="nx-card">
+  <div class="nx-card-header">
+    <span class="nx-card-title">📚 Mes cours</span>
+    <a href="{% url 'creer_cours' %}" class="btn-nx btn-nx-primary btn-nx-sm">
+      <i class="bi bi-plus-circle"></i> Nouveau cours
+    </a>
+  </div>
+
+  {% if mes_cours %}
+  <div class="nx-courses-grid" style="padding-top:8px;">
+    {% for cours in mes_cours %}
+    <div class="nx-course-card">
+      <div class="nx-course-img">
+        {% if cours.image %}
+          <img src="{{ cours.image.url }}" alt="{{ cours.titre }}">
+        {% else %}
+          📖
+        {% endif %}
+        {% if not cours.est_publie %}
+          <span class="nx-badge nx-badge-warning" style="position:absolute; top:12px; right:12px;">Brouillon</span>
+        {% endif %}
+      </div>
+      <div class="nx-course-body">
+        <div class="nx-course-title">{{ cours.titre }}</div>
+        <div class="nx-course-desc">{{ cours.description|truncatechars:100 }}</div>
+        <div class="nx-course-meta">
+          <span>📖 {{ cours.nombre_lecons }} leçon{{ cours.nombre_lecons|pluralize }}</span>
+          <span>🎓 {{ cours.nb_inscrits }} inscrit{{ cours.nb_inscrits|pluralize }}</span>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+          <a href="{% url 'detail_cours_enseignant' cours.pk %}" class="btn-nx btn-nx-primary btn-nx-sm">Gérer</a>
+          <a href="{% url 'modifier_cours' cours.pk %}" class="btn-nx btn-nx-ghost btn-nx-sm"><i class="bi bi-pencil"></i></a>
+          <a href="{% url 'supprimer_cours' cours.pk %}" class="btn-nx btn-nx-danger btn-nx-sm"><i class="bi bi-trash"></i></a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div style="text-align:center; padding:48px 0;">
+    <div style="font-size:48px; margin-bottom:16px;">📭</div>
+    <p style="color:var(--text-muted); margin-bottom:20px;">Vous n'avez pas encore créé de cours.</p>
+    <a href="{% url 'creer_cours' %}" class="btn-nx btn-nx-primary">
+      <i class="bi bi-plus-circle"></i> Créer mon premier cours
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

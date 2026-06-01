@@ -1,0 +1,31 @@
+{% extends 'plateforme/base.html' %}
+{% block titre %}Confirmation de suppression{% endblock %}
+{% block page_title %}Confirmer la suppression{% endblock %}
+
+{% block contenu %}
+<div style="max-width:480px;">
+  <div class="nx-card">
+    <div style="text-align:center; padding:16px 0 24px;">
+      <div style="font-size:56px; margin-bottom:16px;">⚠️</div>
+      <h2 style="font-size:20px; font-weight:700; margin-bottom:8px;">Confirmer la suppression</h2>
+      <p style="color:var(--text-muted); font-size:14px;">
+        Êtes-vous sûr de vouloir supprimer <strong style="color:white;">{{ objet }}</strong> ?
+        <br>Cette action est <strong style="color:#ff7675;">irréversible</strong>.
+      </p>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="d-flex gap-3" style="justify-content:center;">
+        <button type="submit" class="btn-nx btn-nx-danger">
+          <i class="bi bi-trash"></i> Oui, supprimer
+        </button>
+        <a href="{% if url_retour_pk %}{% url url_retour url_retour_pk %}{% else %}{% url url_retour %}{% endif %}"
+           class="btn-nx btn-nx-ghost">
+          Annuler
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

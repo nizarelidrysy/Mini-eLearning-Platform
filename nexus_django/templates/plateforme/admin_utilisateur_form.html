@@ -1,0 +1,42 @@
+{% extends 'plateforme/base.html' %}
+{% block titre %}{{ titre }}{% endblock %}
+{% block page_title %}{{ titre }}{% endblock %}
+
+{% block contenu %}
+<div style="max-width: 560px;">
+  <div class="nx-card">
+    <div class="nx-card-header">
+      <span class="nx-card-title">{{ titre }}</span>
+    </div>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="mb-3">
+        <label class="form-label">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div style="color:#ff7675; font-size:12px; margin-top:4px;">{{ field.errors|join:", " }}</div>
+        {% endif %}
+        {% if field.help_text %}
+          <div style="color:var(--text-muted); font-size:11px; margin-top:4px;">{{ field.help_text }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      {% if user_cible %}
+      <div class="nx-alert nx-alert-info" style="margin-bottom:16px;">
+        ℹ️ Le mot de passe ne peut pas être modifié depuis cette interface. Utilisez le panneau d'administration Django.
+      </div>
+      {% endif %}
+
+      <div class="d-flex gap-3 mt-4">
+        <button type="submit" class="btn-nx btn-nx-primary">
+          <i class="bi bi-check-circle"></i> Enregistrer
+        </button>
+        <a href="{% url 'admin_utilisateurs' %}" class="btn-nx btn-nx-ghost">Annuler</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

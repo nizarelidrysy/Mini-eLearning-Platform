@@ -1,0 +1,38 @@
+{% extends 'plateforme/base.html' %}
+{% block titre %}Ajouter un choix{% endblock %}
+{% block page_title %}Ajouter un choix de réponse{% endblock %}
+
+{% block contenu %}
+<div style="max-width:520px;">
+  <div class="nx-card">
+    <div class="nx-card-header">
+      <span class="nx-card-title">💬 Nouveau choix</span>
+    </div>
+    <div style="padding:12px 0 20px; border-bottom:1px solid var(--border); margin-bottom:20px;">
+      <p style="font-size:13px; color:var(--text-muted);">Question :</p>
+      <p style="font-size:15px; font-weight:600;">{{ question.texte }}</p>
+    </div>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="mb-3">
+        <label class="form-label">{{ field.label }}</label>
+        {% if field.field.widget.input_type == 'checkbox' %}
+          <div class="form-check">
+            {{ field }}
+            <label class="form-check-label ms-2">Cocher si c'est la bonne réponse</label>
+          </div>
+        {% else %}
+          {{ field }}
+        {% endif %}
+        {% if field.errors %}<div style="color:#ff7675;font-size:12px;">{{ field.errors|join:", " }}</div>{% endif %}
+      </div>
+      {% endfor %}
+      <div class="d-flex gap-3 mt-4">
+        <button type="submit" class="btn-nx btn-nx-primary"><i class="bi bi-check"></i> Ajouter</button>
+        <a href="{% url 'gerer_quiz' question.quiz.pk %}" class="btn-nx btn-nx-ghost">Annuler</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

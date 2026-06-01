@@ -1,0 +1,40 @@
+{% extends 'plateforme/base.html' %}
+{% block titre %}{{ titre }}{% endblock %}
+{% block page_title %}{{ titre }}{% endblock %}
+
+{% block contenu %}
+<div style="max-width:640px;">
+  <div class="nx-card">
+    <div class="nx-card-header">
+      <span class="nx-card-title">{{ titre }}</span>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="mb-3">
+        <label class="form-label">{{ field.label }}</label>
+        {% if field.field.widget.input_type == 'checkbox' %}
+          <div class="form-check">
+            {{ field }}
+            <label class="form-check-label ms-2" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          </div>
+        {% else %}
+          {{ field }}
+        {% endif %}
+        {% if field.errors %}
+          <div style="color:#ff7675; font-size:12px; margin-top:4px;">{{ field.errors|join:", " }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      <div class="d-flex gap-3 mt-4">
+        <button type="submit" class="btn-nx btn-nx-primary">
+          <i class="bi bi-check-circle"></i> Enregistrer
+        </button>
+        <a href="{% url 'tableau_bord_enseignant' %}" class="btn-nx btn-nx-ghost">Annuler</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

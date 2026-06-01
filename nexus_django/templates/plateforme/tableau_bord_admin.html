@@ -1,0 +1,120 @@
+{% extends 'plateforme/base.html' %}
+{% block titre %}Tableau de bord Admin{% endblock %}
+{% block page_title %}Tableau de bord — Administration{% endblock %}
+
+{% block contenu %}
+<!-- Stats -->
+<div class="nx-stats-grid">
+  <div class="nx-stat-card">
+    <div class="nx-stat-icon purple">👨‍🏫</div>
+    <div>
+      <div class="nx-stat-value">{{ nb_enseignants }}</div>
+      <div class="nx-stat-label">Enseignants</div>
+    </div>
+  </div>
+  <div class="nx-stat-card">
+    <div class="nx-stat-icon green">🎓</div>
+    <div>
+      <div class="nx-stat-value">{{ nb_etudiants }}</div>
+      <div class="nx-stat-label">Étudiants</div>
+    </div>
+  </div>
+  <div class="nx-stat-card">
+    <div class="nx-stat-icon blue">📚</div>
+    <div>
+      <div class="nx-stat-value">{{ nb_cours }}</div>
+      <div class="nx-stat-label">Cours publiés</div>
+    </div>
+  </div>
+  <div class="nx-stat-card">
+    <div class="nx-stat-icon pink">📝</div>
+    <div>
+      <div class="nx-stat-value">{{ nb_inscriptions }}</div>
+      <div class="nx-stat-label">Inscriptions</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Cours récents -->
+  <div class="col-lg-6">
+    <div class="nx-card">
+      <div class="nx-card-header">
+        <span class="nx-card-title">📚 Cours récents</span>
+        <a href="{% url 'admin_cours' %}" class="btn-nx btn-nx-ghost btn-nx-sm">Voir tout</a>
+      </div>
+      {% if cours_recents %}
+      <table class="nx-table">
+        <thead>
+          <tr>
+            <th>Titre</th>
+            <th>Enseignant</th>
+            <th>Inscrits</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for cours in cours_recents %}
+          <tr>
+            <td><strong>{{ cours.titre }}</strong></td>
+            <td class="text-muted">{{ cours.enseignant.get_full_name|default:cours.enseignant.username }}</td>
+            <td><span class="nx-badge nx-badge-success">{{ cours.nombre_inscrits }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+        <p class="text-muted" style="text-align:center; padding:24px 0;">Aucun cours créé pour l'instant.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Utilisateurs récents -->
+  <div class="col-lg-6">
+    <div class="nx-card">
+      <div class="nx-card-header">
+        <span class="nx-card-title">👥 Nouveaux utilisateurs</span>
+        <a href="{% url 'admin_utilisateurs' %}" class="btn-nx btn-nx-ghost btn-nx-sm">Voir tout</a>
+      </div>
+      <table class="nx-table">
+        <thead>
+          <tr><th>Utilisateur</th><th>Rôle</th><th>Date</th></tr>
+        </thead>
+        <tbody>
+          {% for u in utilisateurs_recents %}
+          <tr>
+            <td>
+              <strong>{{ u.get_full_name|default:u.username }}</strong>
+              <div style="font-size:12px; color:var(--text-muted);">{{ u.email }}</div>
+            </td>
+            <td>
+              {% if u.profil.role == 'admin' %}<span class="nx-badge nx-badge-admin">Admin</span>
+              {% elif u.profil.role == 'enseignant' %}<span class="nx-badge nx-badge-enseignant">Enseignant</span>
+              {% else %}<span class="nx-badge nx-badge-etudiant">Étudiant</span>{% endif %}
+            </td>
+            <td class="text-muted" style="font-size:12px;">{{ u.date_joined|date:"d/m/Y" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Actions rapides -->
+<div class="nx-card mt-4">
+  <div class="nx-card-header">
+    <span class="nx-card-title">⚡ Actions rapides</span>
+  </div>
+  <div class="d-flex gap-3 flex-wrap">
+    <a href="{% url 'admin_creer_utilisateur' %}" class="btn-nx btn-nx-primary">
+      <i class="bi bi-person-plus"></i> Créer un utilisateur
+    </a>
+    <a href="{% url 'admin_utilisateurs' %}" class="btn-nx btn-nx-ghost">
+      <i class="bi bi-people"></i> Gérer les utilisateurs
+    </a>
+    <a href="{% url 'admin_cours' %}" class="btn-nx btn-nx-ghost">
+      <i class="bi bi-book"></i> Gérer les cours
+    </a>
+  </div>
+</div>
+{% endblock %}

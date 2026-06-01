@@ -1,0 +1,50 @@
+{% extends 'plateforme/base.html' %}
+{% block titre %}Tous les cours — Admin{% endblock %}
+{% block page_title %}Tous les cours{% endblock %}
+
+{% block contenu %}
+<div class="nx-card">
+  <div class="nx-card-header">
+    <span class="nx-card-title">📚 Tous les cours ({{ cours|length }})</span>
+  </div>
+
+  <table class="nx-table">
+    <thead>
+      <tr>
+        <th>Cours</th>
+        <th>Enseignant</th>
+        <th>Leçons</th>
+        <th>Inscrits</th>
+        <th>Statut</th>
+        <th>Créé le</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in cours %}
+      <tr>
+        <td><strong>{{ c.titre }}</strong></td>
+        <td class="text-muted">{{ c.enseignant.get_full_name|default:c.enseignant.username }}</td>
+        <td>{{ c.nombre_lecons }}</td>
+        <td>{{ c.nombre_inscrits }}</td>
+        <td>
+          {% if c.est_publie %}
+            <span class="nx-badge nx-badge-success">Publié</span>
+          {% else %}
+            <span class="nx-badge nx-badge-warning">Brouillon</span>
+          {% endif %}
+        </td>
+        <td class="text-muted" style="font-size:12px;">{{ c.date_creation|date:"d/m/Y" }}</td>
+        <td>
+          <a href="{% url 'admin_supprimer_cours' c.pk %}" class="btn-nx btn-nx-danger btn-nx-sm">
+            <i class="bi bi-trash"></i>
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" style="text-align:center; padding:32px; color:var(--text-muted);">Aucun cours trouvé.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

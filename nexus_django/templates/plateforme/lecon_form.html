@@ -1,0 +1,36 @@
+{% extends 'plateforme/base.html' %}
+{% block titre %}{{ titre }} — {{ cours.titre }}{% endblock %}
+{% block page_title %}{{ titre }}{% endblock %}
+
+{% block contenu %}
+<div style="max-width:640px;">
+  <div class="nx-card">
+    <div class="nx-card-header">
+      <div>
+        <span class="nx-card-title">{{ titre }}</span>
+        <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Cours : {{ cours.titre }}</div>
+      </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="mb-3">
+        <label class="form-label">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div style="color:#ff7675; font-size:12px; margin-top:4px;">{{ field.errors|join:", " }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      <div class="d-flex gap-3 mt-4">
+        <button type="submit" class="btn-nx btn-nx-primary">
+          <i class="bi bi-check-circle"></i> Enregistrer
+        </button>
+        <a href="{% url 'detail_cours_enseignant' cours.pk %}" class="btn-nx btn-nx-ghost">Annuler</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'plateforme/base.html' %}
+{% block titre %}Catalogue des cours{% endblock %}
+{% block page_title %}Catalogue des cours{% endblock %}
+
+{% block contenu %}
+<div style="margin-bottom:24px;">
+  <p style="color:var(--text-muted); font-size:14px;">{{ cours|length }} cours disponible{{ cours|length|pluralize }}</p>
+</div>
+
+{% if cours %}
+<div class="nx-courses-grid">
+  {% for c in cours %}
+  <div class="nx-course-card">
+    <div class="nx-course-img">
+      {% if c.image %}
+        <img src="{{ c.image.url }}" alt="{{ c.titre }}">
+      {% else %}
+        📖
+      {% endif %}
+    </div>
+    <div class="nx-course-body">
+      <div class="nx-course-title">{{ c.titre }}</div>
+      <div class="nx-course-desc">{{ c.description|truncatechars:110 }}</div>
+      <div class="nx-course-meta">
+        <span>👨‍🏫 {{ c.enseignant.get_full_name|default:c.enseignant.username }}</span>
+        <span>🎓 {{ c.nb_inscrits }} inscrit{{ c.nb_inscrits|pluralize }}</span>
+        <span>📖 {{ c.nombre_lecons }} leçon{{ c.nombre_lecons|pluralize }}</span>
+      </div>
+
+      {% if c.pk in mes_inscriptions %}
+        <a href="{% url 'detail_cours_etudiant' c.pk %}" class="btn-nx btn-nx-success btn-nx-sm">
+          ✓ Inscrit — Continuer
+        </a>
+      {% else %}
+        <div class="d-flex gap-2">
+          <a href="{% url 'detail_cours_etudiant' c.pk %}" class="btn-nx btn-nx-ghost btn-nx-sm">Voir le cours</a>
+          <a href="{% url 'sinscrire_cours' c.pk %}" class="btn-nx btn-nx-primary btn-nx-sm">S'inscrire</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+  <div style="text-align:center; padding:64px 0;">
+    <div style="font-size:56px; margin-bottom:16px;">📭</div>
+    <p style="color:var(--text-muted);">Aucun cours disponible pour l'instant.</p>
+  </div>
+{% endif %}
+{% endblock %}

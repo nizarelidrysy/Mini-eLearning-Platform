@@ -1,7 +1,6 @@
 import time
 import data
 import ui
-import authentification
 
 def consulter_tout_le_monde():
     ui.clear_screen()

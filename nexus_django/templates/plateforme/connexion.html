@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion — Nexus Learn</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="{% static 'css/nexus.css' %}">
+</head>
+<body>
+<div class="nx-auth-page">
+  <div class="nx-auth-box nx-fade-in">
+    <div class="nx-auth-logo">
+      <div class="title">⚡ NEXUS LEARN</div>
+      <div class="subtitle">Plateforme E-Learning EMSI</div>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="nx-alert nx-alert-{{ message.tags|default:'info' }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label class="form-label">{{ form.username.label }}</label>
+        {{ form.username }}
+        {% if form.username.errors %}
+          <div style="color:#ff7675; font-size:12px; margin-top:4px;">{{ form.username.errors|join:", " }}</div>
+        {% endif %}
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">{{ form.password.label }}</label>
+        {{ form.password }}
+        {% if form.non_field_errors %}
+          <div style="color:#ff7675; font-size:12px; margin-top:4px;">Identifiants invalides. Veuillez réessayer.</div>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="btn-nx btn-nx-primary w-100" style="justify-content:center; padding:13px;">
+        <i class="bi bi-box-arrow-in-right"></i> Se connecter
+      </button>
+    </form>
+
+    <hr style="border-color: var(--border); margin: 24px 0;">
+
+    <p style="text-align:center; font-size:14px; color:var(--text-muted);">
+      Pas encore de compte ?
+      <a href="{% url 'inscription' %}" style="color:var(--primary-light); font-weight:600;">S'inscrire</a>
+    </p>
+
+    <div style="margin-top: 24px; padding: 14px; background: rgba(108,99,255,0.08); border-radius: 8px; border: 1px solid rgba(108,99,255,0.2);">
+      <p style="font-size:12px; color:var(--text-muted); margin:0; text-align:center;">
+        <strong style="color:var(--primary-light);">Compte admin par défaut :</strong><br>
+        Identifiant : <code style="color:var(--accent);">admin</code> · Mot de passe : <code style="color:var(--accent);">admin123</code>
+      </p>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

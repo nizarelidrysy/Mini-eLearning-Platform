@@ -41,3 +41,31 @@ The modular nature of Nexus Learn allows for several expansion paths:
 - **SQL Integration**: Swapping the `data.py` logic to use SQLite or PostgreSQL for better concurrent access handling.
 - **Web API Layer**: Wrapping the core logic in a FastAPI or Flask app to serve as a backend for a modern frontend.
 - **Enrollment Logic**: Adding many-to-many relationships between students and courses to track progress and grades.
+
+---
+
+## 🚀 Web Migration (Django)
+Following the future scalability plans, Nexus Learn has been successfully migrated to a full **Django web application**. 
+
+### How to Run the Web Platform
+1. **Activate the Virtual Environment**:
+   Navigate to the project root directory and activate the python virtual environment.
+   ```bash
+   source nexus_django_env/bin/activate
+   ```
+2. **Navigate to the Django directory**:
+   ```bash
+   cd nexus_django
+   ```
+3. **Start the Development Server**:
+   ```bash
+   python manage.py runserver 0.0.0.0:8000
+   ```
+4. **Access the Platform**:
+   Open your browser and navigate to `http://localhost:8000/`
+
+### Demo Credentials (Pre-seeded Data)
+The platform is populated with demo data. You can log in with any of the following accounts:
+- **Administrateur**: `admin` / `admin123`
+- **Enseignant (Professeur)**: `reem` / `1234` OR `nizar_prof` / `azerty`
+- **Étudiant**: `rim` / `rim1234` OR `israe` / `israe1234`

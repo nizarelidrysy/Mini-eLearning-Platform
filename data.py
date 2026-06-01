@@ -21,7 +21,7 @@ def sauvegarder():
         json.dump(db, f, indent=4, ensure_ascii=False)
 
 def charger_donnees():
-    """Loads data from JSON and converts keys back to integers."""
+
     global administrateurs, enseignants, etudiants, cours
     if not os.path.exists(DB_FILE):
         sauvegarder()

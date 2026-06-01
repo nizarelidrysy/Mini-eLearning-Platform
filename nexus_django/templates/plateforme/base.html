@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block titre %}Nexus Learn{% endblock %} — Plateforme E-Learning</title>
+  <meta name="description" content="Nexus Learn — Plateforme e-learning moderne avec gestion des rôles : administrateur, enseignant et étudiant.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="{% static 'css/nexus.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+<div class="nx-wrapper">
+
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="nx-sidebar">
+    <div class="nx-sidebar-header">
+      <div class="nx-logo">⚡ NEXUS LEARN</div>
+      <div class="nx-logo-sub">Plateforme E-Learning</div>
+    </div>
+
+    {% if user.is_authenticated %}
+    <div class="nx-user-info">
+      {% if user.profil.photo %}
+        <img src="{{ user.profil.photo.url }}" class="nx-avatar" alt="Photo">
+      {% else %}
+        <div class="nx-avatar">{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}</div>
+      {% endif %}
+      <div>
+        <div class="nx-user-name">{{ user.get_full_name|default:user.username }}</div>
+        <div class="nx-user-role">{{ user.profil.get_role_display }}</div>
+      </div>
+    </div>
+    {% endif %}
+
+    <nav class="nx-nav">
+      {% if user.is_authenticated %}
+        {% with role=user.profil.role %}
+
+          {% if role == 'admin' %}
+          <div class="nx-nav-section">Administration</div>
+          <a href="{% url 'tableau_bord_admin' %}" class="nx-nav-link {% if request.resolver_match.url_name == 'tableau_bord_admin' %}active{% endif %}">
+            <span class="icon">📊</span> Tableau de bord
+          </a>
+          <a href="{% url 'admin_utilisateurs' %}" class="nx-nav-link {% if 'utilisateur' in request.resolver_match.url_name %}active{% endif %}">
+            <span class="icon">👥</span> Utilisateurs
+          </a>
+          <a href="{% url 'admin_cours' %}" class="nx-nav-link {% if request.resolver_match.url_name == 'admin_cours' %}active{% endif %}">
+            <span class="icon">📚</span> Tous les cours
+          </a>
+          {% endif %}
+
+          {% if role == 'enseignant' %}
+          <div class="nx-nav-section">Espace Enseignant</div>
+          <a href="{% url 'tableau_bord_enseignant' %}" class="nx-nav-link {% if request.resolver_match.url_name == 'tableau_bord_enseignant' %}active{% endif %}">
+            <span class="icon">📊</span> Tableau de bord
+          </a>
+          <a href="{% url 'creer_cours' %}" class="nx-nav-link {% if request.resolver_match.url_name == 'creer_cours' %}active{% endif %}">
+            <span class="icon">➕</span> Créer un cours
+          </a>
+          {% endif %}
+
+          {% if role == 'etudiant' %}
+          <div class="nx-nav-section">Espace Étudiant</div>
+          <a href="{% url 'tableau_bord_etudiant' %}" class="nx-nav-link {% if request.resolver_match.url_name == 'tableau_bord_etudiant' %}active{% endif %}">
+            <span class="icon">🏠</span> Tableau de bord
+          </a>
+          <a href="{% url 'catalogue' %}" class="nx-nav-link {% if request.resolver_match.url_name == 'catalogue' %}active{% endif %}">
+            <span class="icon">📖</span> Catalogue des cours
+          </a>
+          <a href="{% url 'mes_resultats' %}" class="nx-nav-link {% if request.resolver_match.url_name == 'mes_resultats' %}active{% endif %}">
+            <span class="icon">🏆</span> Mes résultats
+          </a>
+          {% endif %}
+
+          <div class="nx-nav-section">Compte</div>
+          <a href="{% url 'profil' %}" class="nx-nav-link {% if request.resolver_match.url_name == 'profil' %}active{% endif %}">
+            <span class="icon">👤</span> Mon profil
+          </a>
+
+        {% endwith %}
+      {% endif %}
+    </nav>
+
+    <div class="nx-sidebar-footer">
+      {% if user.is_authenticated %}
+      <a href="{% url 'deconnexion' %}" class="nx-nav-link" style="color:#ff7675;">
+        <span class="icon">🚪</span> Déconnexion
+      </a>
+      {% endif %}
+    </div>
+  </aside>
+
+  <!-- ══ MAIN CONTENT ══ -->
+  <main class="nx-main">
+    <div class="nx-topbar">
+      <div class="nx-page-title">{% block page_title %}Nexus Learn{% endblock %}</div>
+      <div class="d-flex align-center gap-3">
+        {% if user.is_authenticated %}
+          <span class="text-muted fs-sm">{{ user.get_full_name|default:user.username }}</span>
+          <a href="{% url 'profil' %}" class="btn-nx btn-nx-ghost btn-nx-sm">
+            <i class="bi bi-person-circle"></i>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="nx-content nx-fade-in">
+      <!-- Messages -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="nx-alert nx-alert-{{ message.tags|default:'info' }}">
+            {% if message.tags == 'success' %}✅{% elif message.tags == 'error' or message.tags == 'danger' %}❌{% elif message.tags == 'warning' %}⚠️{% else %}ℹ️{% endif %}
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% block contenu %}{% endblock %}
+    </div>
+  </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,66 @@
+{% extends 'plateforme/base.html' %}
+{% block titre %}Mon profil{% endblock %}
+{% block page_title %}Mon profil{% endblock %}
+
+{% block contenu %}
+<div style="max-width:600px;">
+  <div class="nx-card">
+    <div class="nx-card-header">
+      <span class="nx-card-title">👤 Modifier mon profil</span>
+      <span class="nx-badge {% if profil.role == 'admin' %}nx-badge-admin{% elif profil.role == 'enseignant' %}nx-badge-enseignant{% else %}nx-badge-etudiant{% endif %}">
+        {{ profil.get_role_display }}
+      </span>
+    </div>
+
+    <!-- Avatar actuel -->
+    <div style="display:flex; align-items:center; gap:20px; margin-bottom:28px; padding:20px; background:rgba(255,255,255,0.03); border-radius:10px;">
+      {% if profil.photo %}
+        <img src="{{ profil.photo.url }}" alt="Photo" style="width:72px; height:72px; border-radius:50%; object-fit:cover;">
+      {% else %}
+        <div class="nx-avatar" style="width:72px; height:72px; font-size:28px;">
+          {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+        </div>
+      {% endif %}
+      <div>
+        <div style="font-size:20px; font-weight:700;">{{ user.get_full_name|default:user.username }}</div>
+        <div style="color:var(--text-muted); font-size:13px;">@{{ user.username }} · {{ user.email }}</div>
+        <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Membre depuis {{ user.date_joined|date:"F Y" }}</div>
+      </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+
+      <div class="row g-3">
+        <div class="col-6">
+          <label class="form-label">{{ form.first_name.label }}</label>
+          {{ form.first_name }}
+        </div>
+        <div class="col-6">
+          <label class="form-label">{{ form.last_name.label }}</label>
+          {{ form.last_name }}
+        </div>
+        <div class="col-12">
+          <label class="form-label">{{ form.email.label }}</label>
+          {{ form.email }}
+        </div>
+        <div class="col-12">
+          <label class="form-label">{{ form.bio.label }}</label>
+          {{ form.bio }}
+        </div>
+        <div class="col-12">
+          <label class="form-label">{{ form.photo.label }}</label>
+          {{ form.photo }}
+        </div>
+      </div>
+
+      <div class="d-flex gap-3 mt-4">
+        <button type="submit" class="btn-nx btn-nx-primary">
+          <i class="bi bi-check-circle"></i> Enregistrer
+        </button>
+        <a href="{% url 'accueil' %}" class="btn-nx btn-nx-ghost">Annuler</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

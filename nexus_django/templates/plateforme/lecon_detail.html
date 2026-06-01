@@ -1,0 +1,78 @@
+{% extends 'plateforme/base.html' %}
+{% block titre %}{{ lecon.titre }}{% endblock %}
+{% block page_title %}{{ lecon.titre }}{% endblock %}
+
+{% block contenu %}
+<div class="row g-4">
+  <!-- Contenu de la leçon -->
+  <div class="col-lg-8">
+    <div class="nx-card">
+      <div class="nx-card-header">
+        <div>
+          <span style="font-size:12px; color:var(--text-muted);">{{ lecon.cours.titre }}</span>
+          <div class="nx-card-title mt-1">{{ lecon.titre }}</div>
+        </div>
+        <span style="font-size:12px; color:var(--text-muted);">Leçon {{ lecon.ordre }}</span>
+      </div>
+
+      <div class="nx-lesson-content">{{ lecon.contenu }}</div>
+
+      {% if lecon.fichier %}
+      <div style="margin-top:24px; padding:16px; background:rgba(108,99,255,0.08); border-radius:8px; border:1px solid rgba(108,99,255,0.2);">
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">📎 Fichier joint</p>
+        <a href="{{ lecon.fichier.url }}" target="_blank" class="btn-nx btn-nx-ghost btn-nx-sm">
+          <i class="bi bi-file-earmark-pdf"></i> Télécharger le PDF
+        </a>
+      </div>
+      {% endif %}
+
+      <!-- Navigation -->
+      <div style="display:flex; justify-content:space-between; margin-top:32px; padding-top:20px; border-top:1px solid var(--border);">
+        <a href="{% url 'detail_cours_etudiant' lecon.cours.pk %}" class="btn-nx btn-nx-ghost">
+          ← Retour au cours
+        </a>
+        {% with next_lecon=lecon.cours.lecons.all %}
+          {% for l in next_lecon %}
+            {% if l.ordre == lecon.ordre|add:1 %}
+              <a href="{% url 'lecon' l.pk %}" class="btn-nx btn-nx-primary">Leçon suivante →</a>
+            {% endif %}
+          {% endfor %}
+        {% endwith %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Progression -->
+  <div class="col-lg-4">
+    <div class="nx-card">
+      <div class="nx-card-header">
+        <span class="nx-card-title">📊 Progression</span>
+      </div>
+      <div style="text-align:center; padding:16px 0;">
+        <div style="font-size:40px; font-weight:800; background:linear-gradient(135deg,var(--primary),var(--accent));
+             -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">
+          {{ inscription.progression }}%
+        </div>
+        <div style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">Cours complété</div>
+        <div class="nx-progress">
+          <div class="nx-progress-bar" style="width:{{ inscription.progression }}%;"></div>
+        </div>
+      </div>
+
+      <hr style="border-color:var(--border); margin:16px 0;">
+
+      <div class="nx-card-title mb-3" style="font-size:14px;">Toutes les leçons</div>
+      {% for l in lecon.cours.lecons.all %}
+      <a href="{% url 'lecon' l.pk %}"
+         style="display:flex; align-items:center; gap:10px; padding:8px; border-radius:6px;
+                background:{% if l.pk == lecon.pk %}rgba(108,99,255,0.15){% else %}transparent{% endif %};
+                margin-bottom:4px; text-decoration:none; color:{% if l.pk == lecon.pk %}var(--primary-light){% else %}var(--text-muted){% endif %};">
+        <span style="font-size:12px; min-width:20px;">{{ l.ordre }}.</span>
+        <span style="font-size:13px;">{{ l.titre }}</span>
+        {% if l.pk == lecon.pk %}<span style="margin-left:auto; font-size:10px;">▶</span>{% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

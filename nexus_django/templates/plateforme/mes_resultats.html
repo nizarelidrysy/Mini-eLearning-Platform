@@ -1,0 +1,48 @@
+{% extends 'plateforme/base.html' %}
+{% block titre %}Mes résultats{% endblock %}
+{% block page_title %}Mes résultats de quiz{% endblock %}
+
+{% block contenu %}
+<div class="nx-card">
+  <div class="nx-card-header">
+    <span class="nx-card-title">🏆 Tous mes résultats ({{ resultats|length }})</span>
+  </div>
+
+  {% if resultats %}
+  <table class="nx-table">
+    <thead>
+      <tr><th>Quiz</th><th>Cours</th><th>Score</th><th>Mention</th><th>Date</th></tr>
+    </thead>
+    <tbody>
+      {% for r in resultats %}
+      <tr>
+        <td><strong>{{ r.quiz.titre }}</strong></td>
+        <td class="text-muted">{{ r.quiz.cours.titre }}</td>
+        <td>
+          <span class="nx-badge {% if r.score >= 70 %}nx-badge-success{% elif r.score >= 50 %}nx-badge-warning{% else %}nx-badge-danger{% endif %}" style="font-size:14px;">
+            {{ r.score }}%
+          </span>
+        </td>
+        <td>
+          {% if r.score >= 70 %}
+            <span style="color:var(--success);">Très bien ✓</span>
+          {% elif r.score >= 50 %}
+            <span style="color:var(--warning);">Passable</span>
+          {% else %}
+            <span style="color:#ff7675;">À améliorer</span>
+          {% endif %}
+        </td>
+        <td class="text-muted" style="font-size:12px;">{{ r.date|date:"d/m/Y à H:i" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <div style="text-align:center; padding:48px 0;">
+      <div style="font-size:48px; margin-bottom:16px;">🎯</div>
+      <p style="color:var(--text-muted);">Vous n'avez pas encore passé de quiz.</p>
+      <a href="{% url 'catalogue' %}" class="btn-nx btn-nx-primary mt-3">Explorer les cours</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
