@@ -50,17 +50,11 @@ Following the future scalability plans, Nexus Learn has been successfully migrat
 ### How to Run the Web Platform
 1. **Activate the Virtual Environment**:
    Navigate to the project root directory and activate the python virtual environment.
-   ```bash
-   source nexus_django_env/bin/activate
-   ```
+   source nexus_django_env/bin/activate  
 2. **Navigate to the Django directory**:
-   ```bash
    cd nexus_django
-   ```
 3. **Start the Development Server**:
-   ```bash
    python manage.py runserver 0.0.0.0:8000
-   ```
 4. **Access the Platform**:
    Open your browser and navigate to `http://localhost:8000/`
 
