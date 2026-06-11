@@ -18,9 +18,9 @@
         },
         {
             "2": {
-                "nom": "r",
-                "email": "r",
-                "password": "r"
+                "nom": "Reem Benali",
+                "email": "reem@emsi.ma",
+                "password": "123aze"
             }
         },
         {
@@ -44,15 +44,6 @@
                 "nom": "Nizar EL IDRYSY",
                 "email": "hello@gmail.com",
                 "password": "nizarnizar"
-            }
-        }
-    ],
-    "cours": [
-        {
-            "1": {
-                "titre": "dejhjdew",
-                "description": "hjwhd",
-                "enseignant_id": 1
             }
         }
     ]
